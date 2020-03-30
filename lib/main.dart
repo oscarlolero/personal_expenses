@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Chart(_recentTransactions),
-          TransactionList(_userTransactions, _deleteTransaction)
+          Expanded(child: TransactionList(_userTransactions, _deleteTransaction))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
