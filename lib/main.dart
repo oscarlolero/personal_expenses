@@ -16,12 +16,15 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
+        errorColor: Colors.red,
         textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            )),
+              title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              button: TextStyle(color: Colors.white)
+            ),
         appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                   title: TextStyle(
@@ -41,8 +44,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _userTransactions = [
-  ];
+  final List<Transaction> _userTransactions = [];
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((transaction) {
@@ -52,16 +54,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String titleOfTx, double amountOfTx) {
+  void _addNewTransaction(String titleOfTx, double amountOfTx, DateTime choosenDate) {
     final newTransaction = Transaction(
       title: titleOfTx,
       amount: amountOfTx,
-      date: DateTime.now(),
+      date: choosenDate,
       id: DateTime.now().toString(),
     );
 
     setState(() {
       _userTransactions.add(newTransaction);
+    });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((transaction) => transaction.id == id);
     });
   }
 
@@ -91,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Chart(_recentTransactions),
-          TransactionList(_userTransactions)
+          TransactionList(_userTransactions, _deleteTransaction)
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

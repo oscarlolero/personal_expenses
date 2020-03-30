@@ -5,8 +5,9 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> userTransactions;
+  final Function deleteTransactionHandler;
 
-  TransactionList(this.userTransactions);
+  TransactionList(this.userTransactions, this.deleteTransactionHandler);
 
   @override
   Widget build(BuildContext context) {
@@ -36,24 +37,28 @@ class TransactionList extends StatelessWidget {
                     vertical: 8,
                     horizontal: 5,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: FittedBox(
-                            child: Text('\$${userTransactions[index].amount}'),
-                          ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                          child: Text('\$${userTransactions[index].amount}'),
                         ),
                       ),
-                      title: Text(
-                        userTransactions[index].title,
-                        style: Theme.of(context).textTheme.title,
+                    ),
+                    title: Text(
+                      userTransactions[index].title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    subtitle: Text(DateFormat.yMMMd()
+                        .format(userTransactions[index].date)),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).errorColor,
                       ),
-                      subtitle: Text(DateFormat.yMMMd()
-                          .format(userTransactions[index].date)),
+                      onPressed: () => deleteTransactionHandler(userTransactions[index].id),
                     ),
                   ),
                 );
