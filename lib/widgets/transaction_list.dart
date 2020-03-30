@@ -31,39 +31,32 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (ctx, index) {
                 return Card(
-                    child: Row(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.all(20),
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 2,
-                      )),
-                      child: Text(
-                        '\$${userTransactions[index].amount.toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColor,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: FittedBox(
+                            child: Text('\$${userTransactions[index].amount}'),
+                          ),
                         ),
                       ),
+                      title: Text(
+                        userTransactions[index].title,
+                        style: Theme.of(context).textTheme.title,
+                      ),
+                      subtitle: Text(DateFormat.yMMMd()
+                          .format(userTransactions[index].date)),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(userTransactions[index].title,
-                            style: Theme.of(context).textTheme.title),
-                        Text(
-                          DateFormat.yMMMd()
-                              .format(userTransactions[index].date),
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    )
-                  ],
-                ));
+                  ),
+                );
               },
               itemCount: userTransactions.length,
             ),
