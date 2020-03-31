@@ -12,21 +12,23 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return userTransactions.isEmpty
-        ? Column(
-            children: <Widget>[
-              Text(
-                'No transactions added yet.',
-                style: Theme.of(context).textTheme.title,
-              ),
-              SizedBox(height: 20),
-              Container(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
-                  ))
-            ],
-          )
+        ? LayoutBuilder(builder: (ctx, constraints) {
+            return Column(
+              children: <Widget>[
+                Text(
+                  'No transactions added yet.',
+                  style: Theme.of(context).textTheme.title,
+                ),
+                SizedBox(height: 20),
+                Container(
+                    height: constraints.maxHeight * 0.6,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ))
+              ],
+            );
+          })
         : ListView.builder(
             itemBuilder: (ctx, index) {
               return Card(
@@ -49,14 +51,15 @@ class TransactionList extends StatelessWidget {
                     userTransactions[index].title,
                     style: Theme.of(context).textTheme.title,
                   ),
-                  subtitle: Text(DateFormat.yMMMd()
-                      .format(userTransactions[index].date)),
+                  subtitle: Text(
+                      DateFormat.yMMMd().format(userTransactions[index].date)),
                   trailing: IconButton(
                     icon: Icon(
                       Icons.delete,
                       color: Theme.of(context).errorColor,
                     ),
-                    onPressed: () => deleteTransactionHandler(userTransactions[index].id),
+                    onPressed: () =>
+                        deleteTransactionHandler(userTransactions[index].id),
                   ),
                 ),
               );
