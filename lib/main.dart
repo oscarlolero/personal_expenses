@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.amber,
         fontFamily: 'Quicksand',
         errorColor: Colors.red,
-        textTheme: ThemeData.light().textTheme.copyWith(
+        textTheme: ThemeData
+            .light()
+            .textTheme
+            .copyWith(
             title: TextStyle(
               fontFamily: 'OpenSans',
               fontWeight: FontWeight.bold,
@@ -33,12 +36,15 @@ class MyApp extends StatelessWidget {
             ),
             button: TextStyle(color: Colors.white)),
         appBarTheme: AppBarTheme(
-            textTheme: ThemeData.light().textTheme.copyWith(
-                  title: TextStyle(
-                      fontFamily: 'OpenSans',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                )),
+            textTheme: ThemeData
+                .light()
+                .textTheme
+                .copyWith(
+              title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            )),
       ),
       home: MyHomePage(),
     );
@@ -62,8 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(
-      String titleOfTx, double amountOfTx, DateTime choosenDate) {
+  void _addNewTransaction(String titleOfTx, double amountOfTx,
+      DateTime choosenDate) {
     final newTransaction = Transaction(
       title: titleOfTx,
       amount: amountOfTx,
@@ -93,6 +99,45 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  List<Widget> _buildLandscapeContent(MediaQueryData mediaQuery, AppBar appBar,
+      Widget transactionsListWidget) {
+    return [Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Show chart'),
+        Switch(
+          value: _showChart,
+          onChanged: (value) {
+            setState(() {
+              _showChart = value;
+            });
+          },
+        )
+      ],
+    ),
+      _showChart
+          ? Container(
+          height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+              0.7,
+          child: Chart(_recentTransactions))
+          : transactionsListWidget
+    ];
+  }
+
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery, AppBar appBar,
+      Widget transactionsListWidget) {
+    return [Container(
+        height: (mediaQuery.size.height -
+            appBar.preferredSize.height -
+            mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions)),
+      transactionsListWidget
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -107,9 +152,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
     final transactionsListWidget = Container(
-      height:
-          (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top) *
-              0.7,
+      height: (mediaQuery.size.height -
+          appBar.preferredSize.height -
+          mediaQuery.padding.top) *
+          0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
 
@@ -120,38 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             //new feature IF
             if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Show chart'),
-                  Switch(
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    },
-                  )
-                ],
-              ),
+              ... _buildLandscapeContent(mediaQuery, appBar, transactionsListWidget),
             if (!isLandscape)
-              Container(
-                  height: (mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.3,
-                  child: Chart(_recentTransactions)),
-            if (!isLandscape)
-              transactionsListWidget,
-            if (isLandscape)
-              _showChart
-                  ? Container(
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7,
-                      child: Chart(_recentTransactions))
-                  : transactionsListWidget
+              ... _buildPortraitContent(mediaQuery, appBar, transactionsListWidget),
           ],
         ),
       ),
